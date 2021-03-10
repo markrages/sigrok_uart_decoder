@@ -50,7 +50,7 @@ def decode_uart(filename, baudrate, channel=15):
     Returns a Bytes object.
     """
 
-    with zipfile.ZipFile(sys.argv[1], 'r') as cr:
+    with zipfile.ZipFile(filename, 'r') as cr:
 
         a = cr.open('metadata')
         b = io.TextIOWrapper(a)
