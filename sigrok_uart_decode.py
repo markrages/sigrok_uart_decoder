@@ -70,7 +70,7 @@ def decode_uart(filename, baudrate, channel=15):
 
         outbytes=[]
 
-        skip = 80e6 / 9e6
+        skip = samplerate / baudrate
         # offsets from leading edge of start bit to middle of eight data
         # bits and stop bit.
         indexes = [1.5*skip, 2.5*skip, 3.5*skip, 4.5*skip,
