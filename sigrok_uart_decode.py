@@ -67,6 +67,16 @@ def decode_uart(filename, baudrate, channel=15):
         unitsize = metadata.get('device 1', 'unitsize')
 
         capturenames = [name for name in cr.namelist() if name.startswith(capturefile)]
+        def capseq(n):
+            """Skip the basename and "-", just return the integer part.
+            """
+            remainder = n[len(capturefile):]
+            if not remainder:
+                return 0
+            if remainder.startswith('-'):
+                return int(remainder[1:])
+
+        capturenames.sort(key=capseq)
 
         outbytes=[]
 
@@ -100,6 +110,8 @@ def decode_uart(filename, baudrate, channel=15):
 
                 d = data[index] & mask
                 if d==0: # start bit!
+                    start_index = index
+
                     byte = 0
                     for bit in range(8):
                         byte >>= 1
@@ -108,7 +120,8 @@ def decode_uart(filename, baudrate, channel=15):
 
                     index += indexes[8]
                     if data[index] & mask == 0:
-                        print("Framing Error", index)
+                        print("Framing Error", start_index)
+                        index = start_index
 
                     while data[index] & mask ==0:
                         index += 1
